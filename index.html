@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wolt Salary Calculator</title>
+    <title>Dynamic Monthly Salary Calculator</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
         .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 650px; }
@@ -87,11 +87,11 @@
     const multipliers = [
         { id: 'night', label: 'Night Hours', val: 1.4 },
         { id: 'ot', label: 'Overtime', val: 2 },
-        { id: 'night_ot', label: 'Night Overtime', val: 2.4 },
+        
         { id: 'ph', label: 'Public Holiday', val: 1.25 },
         { id: 'ph_night', label: 'PH Night', val: 1.5 },
-        { id: 'ph_ot', label: 'PH Overtime', val: 3.5 },
-        { id: 'ph_night_ot', label: 'PH Night OT', val: 4.4 }
+        
+        
     ];
 
     function init() {
