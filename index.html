@@ -1,35 +1,24 @@
 <!DOCTYPE html>
-<!--
-Created using JS Bin
-http://jsbin.com
-
-Copyright (c) 2026 by anonymous (http://jsbin.com/kawaribaco/1/edit)
-
-Released under the MIT license: http://jsbin.mit-license.org
--->
-<meta name="robots" content="noindex">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wolt salary calculator</title>
+    <title>Dynamic Monthly Salary Calculator</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
         .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 650px; }
         h2 { text-align: center; color: #1a73e8; margin-bottom: 25px; }
-        
-        .setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 10px; }
+        .setup-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 10px; }
         .control-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-weight: bold; font-size: 0.9em; color: #555; }
-        select, input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
-
+        label { font-weight: bold; font-size: 0.85em; color: #555; }
+        select, input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
         .row { display: grid; grid-template-columns: 2.5fr 1fr 1.2fr; gap: 15px; margin-bottom: 10px; align-items: center; padding: 5px 0; border-bottom: 1px solid #f1f1f1; }
         .header { font-weight: bold; color: #70757a; border-bottom: 2px solid #ddd; margin-bottom: 15px; }
         .multiplier { font-size: 0.8em; color: #1e8e3e; font-weight: bold; background: #e6f4ea; padding: 2px 6px; border-radius: 4px; }
-        
         .result-box { margin-top: 30px; padding: 20px; background: #1a73e8; color: white; border-radius: 10px; text-align: center; }
         .total-amount { font-size: 2.2em; font-weight: bold; display: block; }
         .summary-text { font-size: 0.9em; opacity: 0.9; margin-bottom: 5px; }
+        .rate-info { font-size: 0.8em; color: #666; text-align: right; margin-top: -10px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -39,21 +28,40 @@ Released under the MIT license: http://jsbin.mit-license.org
     
     <div class="setup-grid">
         <div class="control-group">
+            <label>Working Month</label>
+            <select id="monthSelect" onchange="update()">
+                <option value="144">January (144h)</option>
+                <option value="160">February (160h)</option>
+                <option value="168">March (168h)</option>
+                <option value="152">April (152h)</option>
+                <option value="152">May (152h)</option>
+                <option value="176">June (176h)</option>
+                <option value="184">July (184h)</option>
+                <option value="160">August (160h)</option>
+                <option value="176">September (176h)</option>
+                <option value="168">October (168h)</option>
+                <option value="160">November (160h)</option>
+                <option value="184">December (184h)</option>
+            </select>
+        </div>
+        <div class="control-group">
             <label>Select Tier</label>
             <select id="tierSelect" onchange="update()">
-                <option value="1">Tier 1 (Base: 1297.5 | Hourly: 8.5)</option>
-                <option value="2">Tier 2 (Base: 1401.0 | Hourly: 9.2)</option>
-                <option value="3">Tier 3 (Base: 1426.9 | Hourly: 9.4)</option>
+                <option value="1">Tier 1 (Base: 1297.5)</option>
+                <option value="2">Tier 2 (Base: 1401.0)</option>
+                <option value="3">Tier 3 (Base: 1426.9)</option>
             </select>
         </div>
         <div class="control-group">
             <label>Work Type</label>
             <select id="workType" onchange="update()">
-                <option value="full">Full Time (100% Base)</option>
-                <option value="part">Part Time (50% Base)</option>
+                <option value="full">Full Time (100%)</option>
+                <option value="part">Part Time (50%)</option>
             </select>
         </div>
     </div>
+
+    <div id="rateDisplay" class="rate-info">Calculated Hourly Rate: 0.00 GEL</div>
 
     <div class="row header">
         <div>Shift Category</div>
@@ -71,9 +79,9 @@ Released under the MIT license: http://jsbin.mit-license.org
 
 <script>
     const tierData = {
-        "1": { base: 1297.5, hourly: 8.5 },
-        "2": { base: 1401.0, hourly: 9.2 },
-        "3": { base: 1426.9, hourly: 9.4 }
+        "1": { base: 1297.5 },
+        "2": { base: 1401.0 },
+        "3": { base: 1426.9 }
     };
 
     const multipliers = [
@@ -84,7 +92,6 @@ Released under the MIT license: http://jsbin.mit-license.org
         { id: 'ph_night', label: 'PH Night', val: 1.5 },
         { id: 'ph_ot', label: 'PH Overtime', val: 3.5 },
         { id: 'ph_night_ot', label: 'PH Night OT', val: 4.4 }
-        
     ];
 
     function init() {
@@ -104,15 +111,18 @@ Released under the MIT license: http://jsbin.mit-license.org
     function update() {
         const tier = document.getElementById('tierSelect').value;
         const type = document.getElementById('workType').value;
+        const monthlyHours = parseFloat(document.getElementById('monthSelect').value);
         
         let baseSalary = tierData[tier].base;
-        const hourlyRate = tierData[tier].hourly;
+        
+      
+        const hourlyRate = baseSalary / monthlyHours;
 
-        // Apply Part-Time half salary rule
         if (type === 'part') {
             baseSalary = baseSalary / 2;
         }
 
+        document.getElementById('rateDisplay').innerText = `Calculated Hourly Rate: ${hourlyRate.toFixed(4)} GEL`;
         document.getElementById('baseDisplay').innerText = `Contract Base: ${baseSalary.toFixed(2)} GEL`;
 
         let totalExtra = 0;
