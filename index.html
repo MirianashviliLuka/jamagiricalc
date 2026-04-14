@@ -1,13 +1,4 @@
 <!DOCTYPE html>
-<!--
-Created using JS Bin
-http://jsbin.com
-
-Copyright (c) 2026 by anonymous (http://jsbin.com/kawaribaco/1/edit)
-
-Released under the MIT license: http://jsbin.mit-license.org
--->
-<meta name="robots" content="noindex">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -41,9 +32,9 @@ Released under the MIT license: http://jsbin.mit-license.org
         <div class="control-group">
             <label>Select Tier</label>
             <select id="tierSelect" onchange="update()">
-                <option value="1">Tier 1 (Base: 1297.5 | Hourly: 8.5)</option>
-                <option value="2">Tier 2 (Base: 1401.0 | Hourly: 9.2)</option>
-                <option value="3">Tier 3 (Base: 1426.9 | Hourly: 9.4)</option>
+                <option value="1">Tier 1 (Base: 1297.5 | Hourly: 8.5GEL)</option>
+                <option value="2">Tier 2 (Base: 1401.0 | Hourly: 9.2GEL)</option>
+                <option value="3">Tier 3 (Base: 1426.9 | Hourly: 9.4GEL)</option>
             </select>
         </div>
         <div class="control-group">
@@ -77,13 +68,14 @@ Released under the MIT license: http://jsbin.mit-license.org
     };
 
     const multipliers = [
-        { id: 'ot', label: 'Overtime', val: 2 },
-        { id: 'ph', label: 'Public Holiday', val: 2 },
         { id: 'night', label: 'Night Hours', val: 1.5 },
+        { id: 'ot', label: 'Overtime', val: 2 },
+        { id: 'night_ot', label: 'Night Overtime', val: 3 },
+        { id: 'ph', label: 'Public Holiday', val: 2 },
         { id: 'ph_night', label: 'PH Night', val: 3 },
         { id: 'ph_ot', label: 'PH Overtime', val: 4 },
-        { id: 'ph_night_ot', label: 'PH Night OT', val: 6 },
-        { id: 'night_ot', label: 'Night Overtime', val: 3 }
+        { id: 'ph_night_ot', label: 'PH Night OT', val: 6 }
+        
     ];
 
     function init() {
@@ -107,7 +99,7 @@ Released under the MIT license: http://jsbin.mit-license.org
         let baseSalary = tierData[tier].base;
         const hourlyRate = tierData[tier].hourly;
 
-        // Apply Part-Time half salary rule
+     
         if (type === 'part') {
             baseSalary = baseSalary / 2;
         }
