@@ -19,6 +19,11 @@
         .total-amount { font-size: 2.2em; font-weight: bold; display: block; }
         .summary-text { font-size: 0.9em; opacity: 0.9; margin-bottom: 5px; }
         .rate-info { font-size: 0.8em; color: #666; text-align: right; margin-top: -10px; margin-bottom: 10px; }
+        
+        .counter{
+          display: flex;
+          flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -75,6 +80,10 @@
         <div class="summary-text" id="baseDisplay">Base: 0.00 GEL</div>
         <span class="total-amount" id="grandTotal">0.00 GEL</span>
     </div>
+    
+    <!-- Elfsight Visitor Counter | Untitled Visitor Counter -->
+<script src="https://elfsightcdn.com/platform.js" async></script>
+<div class="elfsight-app-2ce65901-e5b6-4625-ac9f-37fe3f07cb17 Counter" data-elfsight-app-lazy></div>
 </div>
 
 <script>
@@ -140,8 +149,6 @@
     window.onload = init;
 </script>
 
-<!-- Start Bravenet.com Service Code -->
-<script type="text/javascript" src="https://pub40.bravenet.com/counter/code.php?id=410867&usernum=3381962196&cpv=3"></script>
-<!-- End Bravenet.com Service Code -->
+
 </body>
 </html>
